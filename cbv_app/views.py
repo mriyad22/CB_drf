@@ -6,6 +6,7 @@ from .serializers import PersionSerializer
 
 
 class PersionApiView(APIView):
+#----------> Create Data
     def post(self, request):
         serializer_data = PersionSerializer(data = request.data)
         if serializer_data.is_valid():
@@ -22,30 +23,30 @@ class PersionApiView(APIView):
             "message" : serializer_data.errors
         })
 
-
-    def get(self, request):
-        user_data = PersonModel.objects.all()
-        serializer = PersionSerializer(user_data, many=True)
-
-        return Response({
-            "success" : True,
-            "message" : "data get",
-            "data" : serializer.data
-        }, status=status.HTTP_200_OK)
-
-
-
-class PersionDetailApiView(APIView):
+    
+#---------> Display Data
     def get_object(self, pk): 
         try:
             return PersonModel.objects.get(id = pk)
         except PersonModel.DoesNotExist:
-            return None
+            return Response({
+                "success" : False,
+                "message" : "You are a bad guy"
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 
-    def get(self, request, pk):
-        user_data = self.get_object(pk)
-        if user_data:
+    def get(self, request, pk=None):
+        if not pk:
+            user_data = PersonModel.objects.all()
+            serializer = PersionSerializer(user_data, many=True)
+    
+            return Response({
+                "success" : True,
+                "message" : "data get",
+                "data" : serializer.data
+            }, status=status.HTTP_200_OK)
+        else:
+            user_data = self.get_object(pk)
             serializer = PersionSerializer(user_data)
 
             return Response({
@@ -53,10 +54,3 @@ class PersionDetailApiView(APIView):
                 "message" : "Individual data get",
                 "data" : serializer.data
             }, status=status.HTTP_200_OK)
-
-        else:
-            return Response({
-                "success" : False,
-                "message" : "You are a bad guy"
-            }, status=status.HTTP_400_BAD_REQUEST)
-            

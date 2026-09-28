@@ -4,5 +4,5 @@ from .views import *
 
 urlpatterns = [
     path("all-data/", PersionApiView.as_view(), name="data"),
-    path("detail/<int:pk>/", PersionDetailApiView.as_view(), name="detail"),
+    path("all-data/<int:pk>/", PersionApiView.as_view(), name="data"),
 ]
