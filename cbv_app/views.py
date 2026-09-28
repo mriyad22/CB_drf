@@ -54,3 +54,28 @@ class PersionApiView(APIView):
                 "message" : "Individual data get",
                 "data" : serializer.data
             }, status=status.HTTP_200_OK)
+
+
+
+    def put(self, request, pk):
+        updata_data = self.get_object(pk)
+        serializer = PersionSerializer(updata_data, data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+
+            return Response({
+                "success" : True,
+                "message" : "data updated",
+                "data" : serializer.data
+            }, status=status.HTTP_201_CREATED)
+
+
+    def delete(self, request, pk):
+        delete_data = self.get_object(pk)
+        delete_data.delete()
+        return Response({
+            "success" : True,
+            "message" : "Data deleted",
+        }, status=status.HTTP_200_OK) 
+
+
